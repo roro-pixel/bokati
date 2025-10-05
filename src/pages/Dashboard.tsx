@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
     { name: 'Fournisseurs', value: summaryData.totalFournisseurs },
   ];
 
-  const pieColors = ['#ff7f50', '#87cefa'];
+  const pieColors = ['#733721ff', '#87cefa'];
 
   return (
     <div className="p-6 space-y-8">
