@@ -11,7 +11,10 @@ import {
   AuditOutlined,
   BookOutlined,
   RightOutlined,
-  FileAddOutlined
+  FileAddOutlined,
+  EditOutlined,
+  CalendarOutlined,
+  WarningOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -49,12 +52,6 @@ const ComptaDashboard = () => {
     { type: 'Résultat', montant: 30000, color: '#df8e2bff' },
   ];
 
-  const colorTypeBalanceSummary = [
-    {color: '#1b5489ff'},
-    {color: '#57a12cff'},
-    {color: '#df8e2bff'}, 
-  ];
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -70,12 +67,13 @@ const ComptaDashboard = () => {
         Tableau de Bord Comptable
       </motion.h1>
 
+      {/* Cartes de statistiques */}
       <Row gutter={16} style={{ marginBottom: 24 }}>
         {[
           { title: "Écritures ce mois", value: 42, icon: <TransactionOutlined />, link: '/compta/saisie' },
           { title: "Comptes actifs", value: 127, icon: <BookOutlined />, link: '/compta/comptes' },
           { title: "Journaux", value: 8, icon: <FileSearchOutlined />, link: '/compta/journaux' },
-          { title: "Anomalies", value: 3, icon: <AuditOutlined />, link: '/compta/parametres' }
+          { title: "Anomalies", value: 3, icon: <AuditOutlined />, link: '/compta/edition' } // Anomalies ramenées vers édition
         ].map((item, index) => (
           <Col span={6} key={index}>
             <motion.div
@@ -102,6 +100,7 @@ const ComptaDashboard = () => {
         ))}
       </Row>
 
+      {/* Synthèse de Balance */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -112,7 +111,7 @@ const ComptaDashboard = () => {
           extra={
             <Button 
               type="link" 
-              onClick={() => navigate('/compta/configuration/balance')}
+              onClick={() => navigate('/compta/configuration')} // Lien vers config page
               icon={<RightOutlined />}
             >
               Voir détail
@@ -135,7 +134,6 @@ const ComptaDashboard = () => {
                       <motion.div whileHover={{ scale: 1.05 }} style={{color: '#0e0f10b8'}}>
                         {`${item.type}: ${item.montant.toLocaleString()} FCFA`}
                       </motion.div>
-                      
                     )}
                     strokeColor={item.color}
                   />
@@ -146,6 +144,7 @@ const ComptaDashboard = () => {
         </Card>
       </motion.div>
 
+      {/* Dernières Écritures */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -194,6 +193,7 @@ const ComptaDashboard = () => {
         </Card>
       </motion.div>
 
+      {/* Accès Rapide - Mis à jour avec vos pages */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -207,9 +207,13 @@ const ComptaDashboard = () => {
           >
             {[
               { key: 'saisie', icon: <FileAddOutlined />, label: 'Nouvelle Saisie', link: '/compta/saisie' },
+              { key: 'edition', icon: <EditOutlined />, label: 'Édition', link: '/compta/edition' },
+              { key: 'periodes', icon: <CalendarOutlined />, label: 'Périodes', link: '/compta/parametres/periodes' },
+              { key: 'anomalies', icon: <WarningOutlined />, label: 'Anomalies', link: '/compta/edition' },
+              { key: 'config', icon: <SettingOutlined />, label: 'Configuration', link: '/compta/configuration' },
+              { key: 'config-avancee', icon: <SettingOutlined />, label: 'Config Avancée', link: '/compta/parametres/avances' },
               { key: 'rapprochement', icon: <SyncOutlined />, label: 'Rapprochement', link: '/compta/parametres/rapprocher' },
-              { key: 'cloture', icon: <DollarOutlined />, label: 'Clôture', link: '/compta/configuration/cloture' },
-              { key: 'config', icon: <SettingOutlined />, label: 'Configuration', link: '/compta/configuration' }
+              { key: 'cloture', icon: <DollarOutlined />, label: 'Clôture', link: '/compta/configuration/cloture' }
             ].map(item => (
               <Menu.Item 
                 key={item.key} 
@@ -228,6 +232,7 @@ const ComptaDashboard = () => {
         </Card>
       </motion.div>
 
+      {/* Élément décoratif */}
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0 }}

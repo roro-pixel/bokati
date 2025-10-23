@@ -9,6 +9,17 @@ import ComptaDashboard from './pages/comptabilite/ComptaDashboard';
 import ComptaSaisiePage from './pages/comptabilite/ComptaSaisiePage';
 import ComptaComptesPages from './pages/comptabilite/ComptaComptesPages';
 import ComptaJournalPage from './pages/comptabilite/ComptaJournalPage';
+import ComptaEditionPage from './pages/comptabilite/ComptaEditionPage';
+import ComptaConfigPage from './pages/comptabilite/ComptaConfigPage';
+import ComptaPeriodPage from './pages/comptabilite/ComptaPeriodPage';
+import ComptaParametersAva from './pages/comptabilite/ComptaParametresAvances';
+
+import PartnersDashboard from './pages/client_fournisseur/PartnersDashboard';
+import PartnerDetailPage from './pages/client_fournisseur/PartnerDetailPage';
+
+import ProductsDashboard from './pages/products/ProductsDashboard';
+
+import SalesDashboard from './pages/ventes/SalesDashboard';
 
 function App() {
   return (
@@ -38,6 +49,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Tableau de bord comptable */}
             <Route
               path="/comptabilite"
               element={
@@ -48,6 +61,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Saisie et écritures */}
             <Route
               path="/compta/saisie"
               element={
@@ -58,6 +73,30 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Édition des transactions */}
+            <Route
+              path="/compta/edition"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ComptaEditionPage/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/compta/edition/transaction/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ComptaEditionPage/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Gestion des comptes */}
             <Route
               path="/compta/comptes"
               element={
@@ -68,6 +107,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Journaux */}
             <Route
               path="/compta/journaux"
               element={
@@ -78,6 +119,127 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Configuration */}
+            <Route
+              path="/compta/configuration"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ComptaConfigPage/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/compta/configuration/balance"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ComptaConfigPage/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/compta/configuration/cloture"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ComptaConfigPage/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Périodes */}
+            <Route
+              path="/compta/parametres/periodes"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ComptaPeriodPage/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Paramètres avancés */}
+            <Route
+              path="/compta/parametres/avances"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ComptaParametersAva/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/compta/parametres"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ComptaParametersAva/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/compta/parametres/rapprocher"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ComptaParametersAva/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+           
+           {/* Clients & Fournisseurs */}
+            <Route
+             path="/partenaires"
+             element={
+                <ProtectedRoute>
+                 <Layout>
+                  <PartnersDashboard />
+                 </Layout>
+                </ProtectedRoute>
+             }
+            />
+
+            <Route
+             path="/partenaires/:id"
+             element={
+               <ProtectedRoute>
+                 <Layout>
+                     <PartnerDetailPage/>
+                  </Layout>
+               </ProtectedRoute>
+             }
+            />
+           <Route
+            path="/produits-tarification"
+           element={
+             <ProtectedRoute>
+               <Layout>
+                  <ProductsDashboard />
+               </Layout>
+            </ProtectedRoute>
+            }
+          />
+
+          {/* Ventes */}
+          <Route
+            path="/ventes"
+            element={
+              <ProtectedRoute>
+                 <Layout>
+                   <SalesDashboard />
+                 </Layout>
+              </ProtectedRoute>
+            }
+          />
           </Routes>
         </div>
       </Router>

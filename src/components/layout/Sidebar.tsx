@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   
   const navigationItems = [
     { name: 'Tableau de bord', to: '/dashboard', icon: LayoutDashboard },
-    { name: 'Clients & Fournisseurs', to: '/clients-fournisseurs', icon: Users },
+    { name: 'Clients & Fournisseurs', to: '/partenaires', icon: Users },
     { name: 'Produits & Tarification', to: '/produits-tarification', icon: ShoppingBag },
     { name: 'Ventes', to: '/ventes', icon: ShoppingCart },
     { name: 'Facturation', to: '/facturation', icon: Receipt },

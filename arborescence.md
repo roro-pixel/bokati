@@ -1,9 +1,10 @@
 # File Tree: compta_pro
 
-Generated on: 10/1/2025, 2:10:46 AM
+Generated on: 10/16/2025, 3:14:15 PM
 Root path: `c:\Users\user\OneDrive\Documents\compta_pro`
 
 ```
+├── 📁 .git/ 🚫 (auto-hidden)
 ├── 📁 dist/ 🚫 (auto-hidden)
 ├── 📁 node_modules/ 🚫 (auto-hidden)
 ├── 📁 src/
@@ -100,6 +101,9 @@ Root path: `c:\Users\user\OneDrive\Documents\compta_pro`
 │   │   │   │   ├── 📄 useApprovalWorkflow.ts
 │   │   │   │   ├── 📄 useEntryValidation.ts
 │   │   │   │   └── 📄 useTransactionProcessing.ts
+│   │   │   ├── 📁 module_four/
+│   │   │   │   ├── 📄 useJournalManagement.ts
+│   │   │   │   └── 📄 useJournalValidation.ts
 │   │   │   ├── 📁 module_six/
 │   │   │   │   ├── 📄 useFiscalYear.ts
 │   │   │   │   └── 📄 usePeriodManagement.ts
