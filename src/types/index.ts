@@ -1163,3 +1163,455 @@ export interface UseSalesReturn {
   searchSales: (filters: SalesFilter) => { quotes: SaleQuote[]; orders: SaleOrder[] };
   exportSales: (filters: SalesFilter) => void;
 }
+
+
+// ==================== MODULE FACTURATION ====================
+
+export type InvoiceStatus = 'BROUILLON' | 'EMISE' | 'ENVOYEE' | 'PARTIELLEMENT_PAYEE' | 'PAYEE' | 'ANNULEE';
+export type InvoiceType = 'VENTE' | 'ACHAT' | 'AVOIR' | 'ACOMPTE';
+export type PaymentStatus = 'EN_ATTENTE' | 'PARTIEL' | 'PAYE' | 'EN_RETARD';
+
+export interface Invoice {
+  id: string;
+  invoiceNumber: string; // FAC-2024-001
+  type: InvoiceType;
+  customerId: string;
+  customerName: string;
+  customerAddress: string;
+  customerTaxId: string;
+  
+  // Références
+  orderId?: string;
+  quoteId?: string;
+  
+  // Dates
+  invoiceDate: Date;
+  dueDate: Date;
+  sentAt?: Date;
+  paidAt?: Date;
+  
+  // Statuts
+  status: InvoiceStatus;
+  paymentStatus: PaymentStatus;
+  
+  // Lignes de facture
+  items: InvoiceItem[];
+  
+  // Totaux
+  subtotal: number;
+  discountAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+  paidAmount: number;
+  dueAmount: number;
+  
+  // Paiement
+  paymentTerms: string;
+  paymentMethod?: string;
+  
+  // Comptabilité
+  journalEntryId?: string;
+  
+  // Documents
+  pdfUrl?: string;
+  
+  entity: string;
+  createdAt: Date;
+  createdBy: string;
+}
+
+export interface InvoiceItem {
+  id: string;
+  productId: string;
+  productCode: string;
+  productName: string;
+  description?: string;
+  quantity: number;
+  unitPrice: number;
+  discountRate: number;
+  taxRate: number;
+  
+  // Calculés
+  discountAmount: number;
+  taxAmount: number;
+  lineTotal: number;
+}
+
+export interface Payment {
+  id: string;
+  invoiceId: string;
+  paymentNumber: string; // PAI-2024-001
+  paymentDate: Date;
+  amount: number;
+  paymentMethod: string;
+  reference: string;
+  bankAccount?: string;
+  notes?: string;
+  recordedBy: string;
+  entity: string;
+  createdAt: Date;
+}
+
+export interface CreditNote {
+  id: string;
+  creditNoteNumber: string; // AVR-2024-001
+  invoiceId: string;
+  customerId: string;
+  issueDate: Date;
+  reason: string;
+  items: CreditNoteItem[];
+  totalAmount: number;
+  status: 'BROUILLON' | 'EMIS' | 'APPLIQUE';
+  entity: string;
+  createdAt: Date;
+  createdBy: string;
+}
+
+export interface CreditNoteItem {
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  reason: string;
+  lineTotal: number;
+}
+
+export interface BillingStats {
+  totalInvoices: number;
+  invoicesThisMonth: number;
+  totalRevenue: number;
+  revenueThisMonth: number;
+  outstandingAmount: number;
+  overdueAmount: number;
+  averagePaymentTime: number;
+  paymentRate: number;
+  topCustomers: { customer: string; amount: number }[];
+  agingReceivables: {
+    current: number;
+    days30: number;
+    days60: number;
+    days90: number;
+    over90: number;
+  };
+}
+
+export interface BillingFilter {
+  status?: InvoiceStatus;
+  type?: InvoiceType;
+  customerId?: string;
+  dateRange?: [Date, Date];
+  searchTerm?: string;
+}
+
+export interface UseBillingReturn {
+  invoices: Invoice[];
+  payments: Payment[];
+  creditNotes: CreditNote[];
+  loading: boolean;
+  error: string | null;
+  stats: BillingStats;
+  createInvoice: (invoice: Omit<Invoice, 'id' | 'invoiceNumber' | 'createdAt' | 'createdBy'>) => Promise<void>;
+  updateInvoice: (id: string, updates: Partial<Invoice>) => Promise<void>;
+  sendInvoice: (invoiceId: string) => Promise<void>;
+  recordPayment: (payment: Omit<Payment, 'id' | 'paymentNumber' | 'createdAt'>) => Promise<void>;
+  createCreditNote: (creditNote: Omit<CreditNote, 'id' | 'creditNoteNumber' | 'createdAt' | 'createdBy'>) => Promise<void>;
+  searchInvoices: (filters: BillingFilter) => Invoice[];
+  exportInvoices: (filters: BillingFilter) => void;
+  generatePDF: (invoiceId: string) => Promise<string>;
+}
+
+// ==================== MODULE FINANCE - TYPES COMPLETS ====================
+
+// Types pour le budget
+export type BudgetStatus = 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'ACTIVE' | 'CLOSED';
+export type BudgetType = 'OPERATIONAL' | 'INVESTMENT' | 'PROJECT' | 'DEPARTMENTAL';
+export type BudgetPeriod = 'MONTHLY' | 'QUARTERLY' | 'ANNUAL';
+
+export interface Budget {
+  id: string;
+  code: string;
+  name: string;
+  type: BudgetType;
+  period: BudgetPeriod;
+  fiscalYearId: string;
+  entity: string;
+  startDate: Date;
+  endDate: Date;
+  status: BudgetStatus;
+  submittedBy?: string;
+  submittedAt?: Date;
+  approvedBy?: string;
+  approvedAt?: Date;
+  totalAmount: number;
+  committedAmount: number;
+  actualSpent: number;
+  remainingAmount: number;
+  lines: BudgetLine[];
+  createdAt: Date;
+  createdBy: string;
+  updatedAt?: Date;
+}
+
+export interface BudgetLine {
+  id: string;
+  budgetId: string;
+  accountId: string;
+  accountCode: string;
+  accountName: string;
+  amounts: {
+    period: string;
+    amount: number;
+    committed: number;
+    actual: number;
+  }[];
+  totalAmount: number;
+  totalCommitted: number;
+  totalActual: number;
+  variance: number;
+  variancePercentage: number;
+  description?: string;
+  createdAt: Date;
+}
+
+export interface BudgetVersion {
+  id: string;
+  budgetId: string;
+  versionNumber: number;
+  name: string;
+  description?: string;
+  lines: BudgetLine[];
+  isActive: boolean;
+  createdAt: Date;
+  createdBy: string;
+}
+
+// Types pour les engagements
+export type EngagementStatus = 'DRAFT' | 'COMMITTED' | 'PARTIALLY_PAID' | 'PAID' | 'CANCELLED';
+export type EngagementType = 'PURCHASE_ORDER' | 'CONTRACT' | 'SERVICE_AGREEMENT' | 'LEASE';
+
+export interface Engagement {
+  id: string;
+  engagementNumber: string;
+  type: EngagementType;
+  supplierId?: string;
+  supplierName: string;
+  budgetId?: string;
+  budgetLineId?: string;
+  engagementDate: Date;
+  dueDate: Date;
+  expectedDeliveryDate?: Date;
+  status: EngagementStatus;
+  totalAmount: number;
+  committedAmount: number;
+  paidAmount: number;
+  dueAmount: number;
+  description: string;
+  reference?: string;
+  items: EngagementItem[];
+  entity: string;
+  createdAt: Date;
+  createdBy: string;
+  updatedAt?: Date;
+}
+
+export interface EngagementItem {
+  id: string;
+  engagementId: string;
+  productId?: string;
+  productName: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  totalAmount: number;
+  budgetAccountId?: string;
+}
+
+// Types pour la trésorerie
+export type CashFlowType = 'OPERATING' | 'INVESTING' | 'FINANCING';
+export type ForecastScenario = 'OPTIMISTIC' | 'BASE' | 'PESSIMISTIC';
+
+export interface CashPosition {
+  id: string;
+  entity: string;
+  date: Date;
+  bankBalances: {
+    bankAccountId: string;
+    bankName: string;
+    accountNumber: string;
+    balance: number;
+  }[];
+  cashOnHand: number;
+  totalCash: number;
+  upcomingPayments: number;
+  expectedReceipts: number;
+  netCashFlow: number;
+  minimumBalance: number;
+  targetBalance: number;
+  alertThreshold: number;
+  createdAt: Date;
+}
+
+export interface CashFlowScenario {
+  id: string;
+  name: string;
+  type: ForecastScenario;
+  description?: string;
+  assumptions: {
+    salesGrowth: number;
+    paymentTerms: number;
+    collectionRate: number;
+    expenseRate: number;
+  };
+  forecasts: CashFlowForecast[];
+  entity: string;
+  createdAt: Date;
+  createdBy: string;
+}
+
+// Types pour rapports trésorerie
+export interface BudgetVarianceLine {
+  accountCode: string;
+  accountName: string;
+  budgetAmount: number;
+  actualAmount: number;
+  varianceAmount: number;
+  variancePercentage: number;
+  status: 'UNDER' | 'OVER' | 'ON_TRACK';
+}
+
+export interface BudgetVarianceAnalysis {
+  lines: BudgetVarianceLine[];
+  totalBudget: number;
+  totalActual: number;
+  totalVariance: number;
+  overallVariancePercentage: number;
+  alerts: string[];
+}
+
+export interface CashFlowAnalysis {
+  period: { start: Date; end: Date };
+  openingBalance: number;
+  closingBalance: number;
+  netCashFlow: number;
+  operatingActivities: {
+    receipts: number;
+    payments: number;
+    netCash: number;
+  };
+  investingActivities: {
+    capitalExpenditure: number;
+    assetSales: number;
+    netCash: number;
+  };
+  financingActivities: {
+    loansReceived: number;
+    loansRepaid: number;
+    dividends: number;
+    netCash: number;
+  };
+  trends: {
+    cashFlowStability: 'HIGH' | 'MEDIUM' | 'LOW';
+    liquidityRisk: 'LOW' | 'MEDIUM' | 'HIGH';
+    recommendations: string[];
+  };
+}
+
+export interface TreasuryReport {
+  period: { start: Date; end: Date };
+  generatedAt: Date;
+  cashPosition: {
+    beginningBalance: number;
+    endingBalance: number;
+    minimumBalance: number;
+    targetBalance: number;
+    status: 'HEALTHY' | 'WARNING' | 'CRITICAL';
+  };
+  cashFlows: CashFlowAnalysis;
+  budgetPerformance: BudgetVarianceAnalysis;
+  commitments: {
+    totalCommitted: number;
+    paidToDate: number;
+    upcomingPayments: number;
+    paymentSchedule: {
+      period: string;
+      amount: number;
+    }[];
+  };
+  alerts: {
+    type: 'CASH_FLOW' | 'BUDGET' | 'COMMITMENT' | 'LIQUIDITY';
+    severity: 'LOW' | 'MEDIUM' | 'HIGH';
+    message: string;
+    actionRequired: boolean;
+  }[];
+  recommendations: string[];
+}
+
+// Stats pour le dashboard finance
+export interface FinanceStats {
+  totalCash: number;
+  cashPosition: number;
+  daysOfCash: number;
+  totalBudget: number;
+  budgetUtilization: number;
+  budgetVariance: number;
+  totalCommitments: number;
+  upcomingPayments: number;
+  lowCashAlerts: number;
+  budgetAlerts: number;
+  overduePayments: number;
+}
+
+// Filtres pour les données finance
+export interface FinanceFilter {
+  period?: { start: Date; end: Date };
+  budgetType?: BudgetType;
+  engagementType?: EngagementType;
+  entity?: string;
+}
+
+// ==================== HOOKS FINANCE - TYPES DE RETOUR ====================
+
+export interface UseBankAccountsReturn {
+  accounts: BankAccount[];
+  loading: boolean;
+  error: string | null;
+  createAccount: (account: Omit<BankAccount, 'id' | 'currentBalance' | 'createdAt' | 'createdBy'>) => Promise<void>;
+  updateAccount: (id: string, updates: Partial<BankAccount>) => Promise<void>;
+  deleteAccount: (id: string) => Promise<void>;
+  reconcileAccount: (accountId: string, reconciliation: Omit<BankReconciliation, 'id' | 'createdAt'>) => Promise<void>;
+  getAccountTransactions: (accountId: string, period?: { start: Date; end: Date }) => BankTransaction[];
+  getAccountBalance: (accountId: string) => number;
+}
+
+export interface UseCashFlowReturn {
+  forecasts: CashFlowForecast[];
+  scenarios: CashFlowScenario[];
+  loading: boolean;
+  error: string | null;
+  createForecast: (forecast: Omit<CashFlowForecast, 'id' | 'createdAt' | 'createdBy'>) => Promise<void>;
+  updateForecast: (id: string, updates: Partial<CashFlowForecast>) => Promise<void>;
+  deleteForecast: (id: string) => Promise<void>;
+  createScenario: (scenario: Omit<CashFlowScenario, 'id' | 'createdAt' | 'createdBy'>) => Promise<void>;
+  runScenario: (scenarioId: string) => CashFlowForecast;
+  getCashPosition: (date?: Date) => CashPosition;
+  analyzeVariance: (forecastId: string, actualData: any) => { variances: any[]; insights: string[] };
+}
+
+export interface UseTreasuryManagementReturn {
+  cashPositions: CashPosition[];
+  budgets: Budget[];
+  engagements: Engagement[];
+  loading: boolean;
+  error: string | null;
+  createBudget: (budget: Omit<Budget, 'id' | 'createdAt' | 'createdBy'>) => Promise<void>;
+  updateBudget: (id: string, updates: Partial<Budget>) => Promise<void>;
+  submitBudget: (budgetId: string) => Promise<void>;
+  approveBudget: (budgetId: string) => Promise<void>;
+  createEngagement: (engagement: Omit<Engagement, 'id' | 'engagementNumber' | 'createdAt' | 'createdBy'>) => Promise<void>;
+  updateEngagement: (id: string, updates: Partial<Engagement>) => Promise<void>;
+  commitEngagement: (engagementId: string) => Promise<void>;
+  getBudgetVariance: (budgetId: string) => BudgetVarianceAnalysis;
+  getCashFlowAnalysis: (period: { start: Date; end: Date }) => CashFlowAnalysis;
+  generateTreasuryReport: (period: { start: Date; end: Date }) => TreasuryReport;
+}

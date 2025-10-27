@@ -21,6 +21,14 @@ import ProductsDashboard from './pages/products/ProductsDashboard';
 
 import SalesDashboard from './pages/ventes/SalesDashboard';
 
+import BillingDashboard from './pages/facturation/BillingDashboard';
+
+import FinancesDashboard from './pages/finance/FinDashboard';
+import { FinBudgetPage } from './pages/finance/FinBudgetPage';
+import { FinEngagementPage } from './pages/finance/FinEngagementPage';
+import { FinTresoreriePage } from './pages/finance/FinTresoreriePage';
+import { FinConfigPage } from './pages/finance/FinConfigPage';
+
 function App() {
   return (
     <AuthProvider>
@@ -240,7 +248,68 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/facturation"
+            element={
+               <ProtectedRoute>
+                 <Layout>
+                    <BillingDashboard />
+                 </Layout>
+               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/finances"
+            element={
+               <ProtectedRoute>
+                 <Layout>
+                    <FinancesDashboard />
+                 </Layout>
+               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/finances/budget"
+            element={
+               <ProtectedRoute>
+                 <Layout>
+                    <FinBudgetPage />
+                 </Layout>
+               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/finances/engagement"
+            element={
+               <ProtectedRoute>
+                 <Layout>
+                    <FinEngagementPage />
+                 </Layout>
+               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/finances/config"
+            element={
+               <ProtectedRoute>
+                 <Layout>
+                    <FinConfigPage />
+                 </Layout>
+               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/finances/tresorerie"
+            element={
+               <ProtectedRoute>
+                 <Layout>
+                    <FinTresoreriePage />
+                 </Layout>
+               </ProtectedRoute>
+            }
+          />
           </Routes>
+
         </div>
       </Router>
     </AuthProvider>

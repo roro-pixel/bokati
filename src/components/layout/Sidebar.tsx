@@ -35,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     { name: 'Ventes', to: '/ventes', icon: ShoppingCart },
     { name: 'Facturation', to: '/facturation', icon: Receipt },
     { name: 'Comptabilité', to: '/comptabilite', icon: Calculator },
-    { name: 'Finance', to: '/finance', icon: BarChart },
+    { name: 'Finance', to: '/finances', icon: BarChart },
     { name: 'Immobilisation', to: '/immobilisation', icon: Building },
     { name: 'Provisions & régulation', to: '/provision-regulation', icon: FileText }
   ];
